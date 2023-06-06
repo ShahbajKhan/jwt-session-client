@@ -9,7 +9,11 @@ const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   const [cartData, setCartData] = useState([]);
   useEffect(() => {
-    fetch(`http://localhost:5000/my-cart?email=${user?.email}`)
+    fetch(`http://localhost:5000/my-cart?email=${user?.email}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setCartData(data[0].totalCount[0].count));
   }, [user]);
@@ -27,6 +31,9 @@ const Navbar = () => {
         <h1 className="flex-1">Hero Tech</h1>
         <li>
           <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/generate-jwt">JWT</Link>
         </li>
         {user?.email && (
           <li>

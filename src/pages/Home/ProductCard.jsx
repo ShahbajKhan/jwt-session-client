@@ -13,7 +13,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
       <p className="text-center font-semibold mb-3">Rating: {product.rating}</p>
       <div className=" flex-1">
         <ul className="space-y-2">
-          {product.keyFeature.map((feature) => {
+          {product?.keyFeature?.map((feature) => {
             return (
               <li className="text-sm " key={feature}>
                 {feature}

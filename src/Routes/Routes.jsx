@@ -7,6 +7,7 @@ import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import Orders from "../pages/Dashboard/Orders/Orders";
 import Users from "../pages/Dashboard/Orders/Users";
+import GenerateJwt from "../pages/GenerateJwt/GenerateJwt";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "authentication",
         element: <Authentication></Authentication>,
+      },
+      {
+        path: "generate-jwt",
+        element: <GenerateJwt></GenerateJwt> ,
       },
       {
         path: "my-cart",

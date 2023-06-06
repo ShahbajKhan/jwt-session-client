@@ -3,10 +3,13 @@ import { useLoaderData } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
+import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
   const { technologies } = useLoaderData();
+  const axiosSecure = useAxiosSecure();
   console.log(technologies);
   const handleAddToCart = (technology) => {
     /**
@@ -19,25 +22,20 @@ const Home = () => {
      **/
     const technologyId = technology._id;
     delete technology._id;
-    fetch(`http://localhost:5000/add-to-cart`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        ...technology,
-        technologyId,
-        purchasedBy: user?.email,
-      }),
-    })
-      .then((res) => res.json())
+    const postData = {
+      ...technology,
+      technologyId,
+      purchasedBy: user?.email,
+    };
+    axiosSecure
+      .post(`/add-to-cart`, postData)
       .then((data) => {
-        console.log(data);
-        data.insertedId && toast.success(`Successfully added to cart.`);
+        console.log(data?.data);
+        data?.data.insertedId && toast.success(`Successfully added to cart.`);
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err);
+        toast.error(err.message);
       });
     return;
   };
@@ -57,3 +55,17 @@ const Home = () => {
 };
 
 export default Home;
+
+// fetch(`http://localhost:5000/add-to-cart`, {
+//       method: "POST",
+//       headers: {
+//         "content-type": "application/json",
+//         Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+//       },
+//       body: JSON.stringify({
+//         ...technology,
+//         technologyId,
+//         purchasedBy: user?.email,
+//       }),
+//     })
+//       .then((res) => res.json())

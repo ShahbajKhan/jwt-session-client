@@ -2,15 +2,27 @@ import { data } from "autoprefixer";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import Table, { Row } from "../../components/reusable/Table";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const MyCart = () => {
   const { user } = useContext(AuthContext);
   const [cartData, setCartData] = useState([]);
+  const axiosSecure = useAxiosSecure();
+  // useEffect(() => {
+  //   fetch(`http://localhost:5000/my-cart?email=${user?.email}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setCartData(data[0].documents));
+  // }, [user]);
   useEffect(() => {
-    fetch(`http://localhost:5000/my-cart?email=${user?.email}`)
-      .then((res) => res.json())
-      .then((data) => setCartData(data[0].documents));
-  }, [user]);
+    axiosSecure.get(`/my-cart?email=${user?.email}`).then((data) => {
+      // console.log(data?.data);
+      setCartData(data?.data[0].documents);
+    });
+  }, [user, axiosSecure]);
   const cols = [
     { label: "Purchased By", value: "purchased By" },
     { label: "Product", value: "Product" },
@@ -19,7 +31,7 @@ const MyCart = () => {
   ];
   return (
     <Table cols={cols}>
-      {cartData.map((singleProduct) => (
+      {cartData?.map((singleProduct) => (
         <Row key={singleProduct._id}>
           <td className="py-3 px-6 text-left ">
             <div className="flex items-center ">

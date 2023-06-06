@@ -1,11 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 import Table, { Row } from "../../../components/reusable/Table";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Users = () => {
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [userCount, setUserCount] = useState(0);
+  
+
   useEffect(() => {
     fetch(`http://localhost:5000/all-users`)
       .then((res) => res.json())
@@ -14,6 +18,24 @@ const Users = () => {
         setUserCount(data[0].totalCount[0].count);
       });
   }, [user]);
+
+  const {data:tqData=[], isLoading, refetch, error,} = useQuery({
+    queryFn: async()=>{
+      const data = await axios(`http://localhost:5000/all-users`);
+      console.log({fromTQ: data})
+      return data?.data;
+    },
+    queryKey:["users"]
+  })
+
+  if (isLoading) return 'Loading...'
+
+  if (error) return 'An error has occurred: ' + error.message
+
+  console.log({tqData});
+
+
+
   const cols = [
     { label: "Email", value: "Email" },
     { label: "Name", value: "Name" },
